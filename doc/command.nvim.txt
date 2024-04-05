@@ -1,20 +1,20 @@
-*command.nvim.txt*        For Neovim >= 0.9.4       Last change: 2024 April 05
+*command.nvim.txt*        For Neovim >= 0.9.0       Last change: 2024 April 05
 
 ==============================================================================
 Table of Contents                             *command.nvim-table-of-contents*
 
 1. command.nvim                                    |command.nvim-command.nvim|
-  - What                                                   |command.nvim-what|
-  - Installing                                       |command.nvim-installing|
-  - Usage                                                 |command.nvim-usage|
-  - Default opts                                   |command.nvim-default-opts|
-  - TODO                                                   |command.nvim-todo|
+  - What                                      |command.nvim-command.nvim-what|
+  - Installing                          |command.nvim-command.nvim-installing|
+  - Usage                                    |command.nvim-command.nvim-usage|
+  - Default opts                      |command.nvim-command.nvim-default-opts|
+  - TODO                                      |command.nvim-command.nvim-todo|
 
 ==============================================================================
 1. command.nvim                                    *command.nvim-command.nvim*
 
 
-WHAT                                                       *command.nvim-what*
+WHAT                                          *command.nvim-command.nvim-what*
 
 command.nvim is a simple command runner. You give it a command and it runs it
 in a new or existing pane of your multiplexer (or a ToggleTerm terminal). It
@@ -23,7 +23,7 @@ is or a custom command depending on rules (see Rules section). If the current
 file is not executable, it asks if you want to make it executable.
 
 
-INSTALLING                                           *command.nvim-installing*
+INSTALLING                              *command.nvim-command.nvim-installing*
 
 With lazy
 
@@ -35,7 +35,7 @@ With lazy
 <
 
 
-USAGE                                                     *command.nvim-usage*
+USAGE                                        *command.nvim-command.nvim-usage*
 
 
 RULES ~
@@ -84,7 +84,7 @@ functions.
 - `:CommandLast` Runs last command
 
 
-DEFAULT OPTS                                       *command.nvim-default-opts*
+DEFAULT OPTS                          *command.nvim-command.nvim-default-opts*
 
 >lua
     local default_opts = {
@@ -121,7 +121,7 @@ DEFAULT OPTS                                       *command.nvim-default-opts*
 <
 
 
-TODO                                                       *command.nvim-todo*
+TODO                                          *command.nvim-command.nvim-todo*
 
 - slime-like behaviors
     - send current line to pane
