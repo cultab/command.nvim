@@ -1,7 +1,5 @@
 # command.nvim
 
-## What
-
 command.nvim is a simple command runner. You give it a command and it runs it in a new or existing pane of your multiplexer (or a ToggleTerm terminal). It remembers the last command so it can repeat it. It can run the current file as is or a custom command depending on rules (see Rules section). If the current file is not executable, it asks if you want to make it executable.
 
 It supports the following multiplexers/backends:
@@ -27,11 +25,24 @@ With Lazy.nvim
 
 ## Usage
 
+Setup keymaps for each action that you want to use. For example:
+
+```lua
+local map = vim.keymap.set
+map('n','<leader>ct', require('command').change_direction, { desc = '[c]ommand [t]oggle pane direction' })
+map('n','<leader>cc', require('command').run_command,      { desc = '[c]ommand shell [c]ommand'         })
+map('n','<leader>cr', require('command').run_current_file, { desc = '[c]ommand [r]un current file'      })
+map('n','<leader>cl', require('command').run_last_command, { desc = '[c]ommand repeat [l]ast command'   })
+```
+
+
 ### Rules
 
-Rules are passed into the `setup()` function.
+Rules are passed into the `setup()` function throught the opts table.
 They are key-value pairs of lua patterns and functions.
+
 ```lua
+opts = {
 	rules = {
         -- run the current file with `nvim -l` if it ends with '.lua'
 		[".*%.lua"] = function(filepath)
@@ -42,19 +53,10 @@ They are key-value pairs of lua patterns and functions.
 			return "make"
 		end,
 	},
+}
 ```
 The lua pattern is matched against the current filename. The function must accept an optional argument and return a string.
 The optional argument will contain the filepath to the current file. The return value will be the shell command to be run when the name of the current file matches the pattern.
-
-###  Example with Lua Functions
-
-```lua
-local map = vim.keymap.set
-map('n','<leader>ct', require('command').change_direction, { desc = '[c]ommand [t]oggle pane direction' })
-map('n','<leader>cc', require('command').run_command,      { desc = '[c]ommand shell [c]ommand'         })
-map('n','<leader>cr', require('command').run_current_file, { desc = '[c]ommand [r]un current file'      })
-map('n','<leader>cl', require('command').run_last_command, { desc = '[c]ommand repeat [l]ast command'   })
-```
 
 ### User Commands
 
@@ -121,8 +123,9 @@ local default_opts = {
     - [x] ToggleTerm
     - [x] wezterm
     - [ ] default nvim terminal
-    - [ ] zelij
     - [ ] kitty
+    - [ ] some other backend
+    - [ ] zellij
 - [ ] clean up types
     - [ ] types for all opts, use lua-ls enums
     - [ ] move to utils ?
