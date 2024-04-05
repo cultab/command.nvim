@@ -4,10 +4,15 @@
 Table of Contents                             *command.nvim-table-of-contents*
 
 1. command.nvim                                    |command.nvim-command.nvim|
-  - Installing                          |command.nvim-command.nvim-installing|
-  - Usage                                    |command.nvim-command.nvim-usage|
-  - Default opts                      |command.nvim-command.nvim-default-opts|
-  - TODO                                      |command.nvim-command.nvim-todo|
+2. Installing                                        |command.nvim-installing|
+3. Usage                                                  |command.nvim-usage|
+  - User Commands                           |command.nvim-usage-user-commands|
+  - Multiplexers & Backends       |command.nvim-usage-multiplexers-&-backends|
+4. Configuration                                  |command.nvim-configuration|
+  - Backends                             |command.nvim-configuration-backends|
+  - Rules                                   |command.nvim-configuration-rules|
+  - Default Opts                     |command.nvim-configuration-default-opts|
+5. TODO                                                    |command.nvim-todo|
 
 ==============================================================================
 1. command.nvim                                    *command.nvim-command.nvim*
@@ -25,7 +30,8 @@ It supports the following multiplexers/backends:
 - toggleterm
 
 
-INSTALLING                              *command.nvim-command.nvim-installing*
+==============================================================================
+2. Installing                                        *command.nvim-installing*
 
 With Lazy.nvim
 
@@ -41,9 +47,10 @@ With Lazy.nvim
 <
 
 
-USAGE                                        *command.nvim-command.nvim-usage*
+==============================================================================
+3. Usage                                                  *command.nvim-usage*
 
-Setup keymaps for each action that you want to use. For example:
+Setup keymaps for each action that you want to use. For example using lua:
 
 >lua
     local map = vim.keymap.set
@@ -54,25 +61,64 @@ Setup keymaps for each action that you want to use. For example:
 <
 
 
-MULTIPLEXERS & BACKENDS ~
+USER COMMANDS                               *command.nvim-usage-user-commands*
+
+You can also use the following user commands instead of the exported lua
+functions.
+
+- `:CommandChangeDirection` Toggles pane direction for running commands
+- `:CommandRun` Show prompt to ask for a command to run
+- `:CommandFile` Runs current file
+- `:CommandLast` Runs last command
 
 
-TMUX & WEZTERM
+MULTIPLEXERS & BACKENDS           *command.nvim-usage-multiplexers-&-backends*
+
+
+TMUX & WEZTERM ~
 
 The tmux and wezterm backends both have 2 built in pane directions, right of
 the editor pane, and below the editor pane.
 
 
-TOGGLETERM
+TOGGLETERM ~
 
 The ToggleTerm backend does not support toggling different pane directions, it
 uses the direction configured in ToggleTerm’s setup.
 
 
-RULES ~
+==============================================================================
+4. Configuration                                  *command.nvim-configuration*
 
-Rules are passed into the `setup()` function throught the opts table. They are
-key-value pairs of lua patterns and functions.
+Configurations is done by passing `opts` to the setup function.
+
+>lua
+    require('command.nvim').setup( {--[[ your options here ]]} )
+<
+
+
+BACKENDS                                 *command.nvim-configuration-backends*
+
+The backend is the multiplexer or terminal to use. It’s controlled by the
+`use` key in the opts table.
+
+>lua
+    opts = {
+        --- the backend to use, one of:
+        --- @alias backend_used
+        --- | 'auto' -- pick automatically by examining environment vars
+        --- | 'tmux'
+        --- | 'wezterm'
+        --- | 'toggleterm'
+        use = "auto",
+    }
+<
+
+
+RULES                                       *command.nvim-configuration-rules*
+
+Rules are key-value pairs of lua patterns and functions. They are passed into
+the `setup()` function through the opts table.
 
 >lua
     opts = {
@@ -95,23 +141,13 @@ contain the filepath to the current file. The return value will be the shell
 command to be run when the name of the current file matches the pattern.
 
 
-USER COMMANDS ~
+DEFAULT OPTS                         *command.nvim-configuration-default-opts*
 
-You can also use the following user commands instead of the exported lua
-functions.
-
-- `:CommandChangeDirection` Toggles pane direction for running commands
-- `:CommandRun` Show prompt to ask for a command to run
-- `:CommandFile` Runs current file
-- `:CommandLast` Runs last command
-
-
-DEFAULT OPTS                          *command.nvim-command.nvim-default-opts*
+The defaults options are as follows:
 
 >lua
     local default_opts = {
-    
-        --- defines the backend to use, one of:
+        --- the backend to use, one of:
         --- @alias backend_used
         --- | 'auto' -- pick automatically by examining environment vars
         --- | 'tmux'
@@ -137,9 +173,11 @@ DEFAULT OPTS                          *command.nvim-command.nvim-default-opts*
                 return "make"
             end,
         },
+    
         --- whether to check if keys in the opts passed to setup are valid
         --- @type bool
         validate = true,
+    
         --- an icon to use for prompts and notifications
         --- @type string
         icon = "$ ",
@@ -147,7 +185,8 @@ DEFAULT OPTS                          *command.nvim-command.nvim-default-opts*
 <
 
 
-TODO                                          *command.nvim-command.nvim-todo*
+==============================================================================
+5. TODO                                                    *command.nvim-todo*
 
 - slime-like behaviors
     - send current line to pane
