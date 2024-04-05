@@ -1,9 +1,7 @@
 on:
   push:
-    branches:
-      - main
     paths:
-      - *.md
+      - '*.md'
 
 name: generate-vimdoc
 
