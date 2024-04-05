@@ -8,7 +8,7 @@ It supports the following multiplexers/backends:
 - wezterm
 - toggleterm
 
-## Installing
+# Installing
 
 With Lazy.nvim
 
@@ -23,9 +23,9 @@ With Lazy.nvim
 }
 ```
 
-## Usage
+# Usage
 
-Setup keymaps for each action that you want to use. For example:
+Setup keymaps for each action that you want to use. For example using lua:
 
 ```lua
 local map = vim.keymap.set
@@ -35,40 +35,7 @@ map('n','<leader>cr', require('command').run_current_file, { desc = '[c]ommand [
 map('n','<leader>cl', require('command').run_last_command, { desc = '[c]ommand repeat [l]ast command'   })
 ```
 
-### Multiplexers & Backends
-
-#### tmux & wezterm
-
-The tmux and wezterm backends both have 2 built in pane directions, right of the editor pane, and below the editor pane.
-
-#### ToggleTerm
-
-The ToggleTerm backend does not support toggling different pane directions, it uses the direction configured in ToggleTerm's setup.
-
-
-### Rules
-
-Rules are passed into the `setup()` function throught the opts table.
-They are key-value pairs of lua patterns and functions.
-
-```lua
-opts = {
-	rules = {
-        -- run the current file with `nvim -l` if it ends with '.lua'
-		[".*%.lua"] = function(filepath)
-			return "nvim -l " .. filepath
-		end,
-        -- run the default Makefile rule if the current file is called 'Makefile'
-		["Makefile"] = function(_)
-			return "make"
-		end,
-	},
-}
-```
-The lua pattern is matched against the current filename. The function must accept an optional argument and return a string.
-The optional argument will contain the filepath to the current file. The return value will be the shell command to be run when the name of the current file matches the pattern.
-
-### User Commands
+## User Commands
 
 You can also use the following user commands instead of the exported lua functions.
 
@@ -84,12 +51,70 @@ You can also use the following user commands instead of the exported lua functio
 - `:CommandLast`
     Runs last command
 
-## Default opts
+## Multiplexers & Backends
+
+### tmux & wezterm
+
+The tmux and wezterm backends both have 2 built in pane directions, right of the editor pane, and below the editor pane.
+
+### ToggleTerm
+
+The ToggleTerm backend does not support toggling different pane directions, it uses the direction configured in ToggleTerm's setup.
+
+# Configuration
+
+Configurations is done by passing `opts` to the setup function.
+
+```lua
+require('command.nvim').setup( {--[[ your options here ]]} )
+```
+
+## Backends
+
+The backend is the multiplexer or terminal to use. It's controlled by the `use` key in the opts table.
+
+```lua
+opts = {
+    --- the backend to use, one of:
+    --- @alias backend_used
+    --- | 'auto' -- pick automatically by examining environment vars
+    --- | 'tmux'
+    --- | 'wezterm'
+    --- | 'toggleterm'
+	use = "auto",
+}
+```
+
+
+## Rules
+
+Rules are key-value pairs of lua patterns and functions.
+They are passed into the `setup()` function through the opts table.
+
+```lua
+opts = {
+	rules = {
+        -- run the current file with `nvim -l` if it ends with '.lua'
+		[".*%.lua"] = function(filepath)
+			return "nvim -l " .. filepath
+		end,
+        -- run the default Makefile rule if the current file is called 'Makefile'
+		["Makefile"] = function(_)
+			return "make"
+		end,
+	},
+}
+```
+
+The lua pattern is matched against the current filename. The function must accept an optional argument and return a string. The optional argument will contain the filepath to the current file. The return value will be the shell command to be run when the name of the current file matches the pattern.
+
+## Default Opts
+
+The defaults options are as follows:
 
 ```lua
 local default_opts = {
-
-    --- defines the backend to use, one of:
+    --- the backend to use, one of:
     --- @alias backend_used
     --- | 'auto' -- pick automatically by examining environment vars
     --- | 'tmux'
@@ -115,17 +140,18 @@ local default_opts = {
 			return "make"
 		end,
 	},
+
     --- whether to check if keys in the opts passed to setup are valid
     --- @type bool
 	validate = true,
+
     --- an icon to use for prompts and notifications
     --- @type string
 	icon = "$ ",
 }
 ```
 
-
-## TODO
+# TODO
 
 - [ ] slime-like behaviors
     - [ ] send current line to pane
