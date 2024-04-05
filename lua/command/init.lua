@@ -1,12 +1,34 @@
 local M = {}
 local notify = require('command.utils').notify
 
+--- @alias backend_used
+--- | 'wezterm'
+--- | 'tmux'
+--- | 'toggleterm'
+--- | 'auto' -- pick automatically by examining environment vars
+
+--- @class opts
+--- @field use backend_used?
+--- @field rules rule[]?
+--- @field validate boolean?
+--- @field icon string?
+--- @field backend backend?
+
+--- @class direction
+--- @field name string
+
+--- @class backend
+--- @field run fun(string)
+--- @field directions direction[]|nil
+
+--- @type string
 M.LastCommand = nil
+--- @type number
 M.CommandDirection = 1
 
 --- @type backend
 M.backend = nil
-
+--- @type opts
 M.opts = {}
 
 --- @type backend[]
@@ -18,13 +40,6 @@ local backends = {
 
 --- @alias rule table<string, fun(string?):string>
 --- @type rule[]
-
---- @class opts
---- @field use string?
---- @field rules rule[]?
---- @field validate boolean?
---- @field icon string?
---- @field backend backend?
 
 --- @type opts
 local default_opts = {
@@ -41,6 +56,7 @@ local default_opts = {
 	icon = '$ ',
 }
 
+--- @type string[]
 local valid_opts = {
 	'use',
 	'rules',

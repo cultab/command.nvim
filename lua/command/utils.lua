@@ -1,12 +1,5 @@
 local M = {}
 
---- @class direction
---- @field name string
-
---- @class backend
---- @field run function(string)
---- @field directions direction[]|nil
-
 ---@alias level "trace" | "debug" | "info" | "warn" | "error" | "off"
 
 --- run shell command
