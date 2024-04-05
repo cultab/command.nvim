@@ -1,5 +1,5 @@
 local system = require('command.utils').system
-local notify = require'command.utils'.notify
+local notify = require('command.utils').notify
 
 --- @type direction[]
 local directions = {
@@ -47,7 +47,7 @@ local function weztermRun(cmd, pane_id)
 end
 
 local function wezterm(cmd)
-	local direction = directions[require'command'.CommandDirection]
+	local direction = directions[require('command').CommandDirection]
 	local pane, err = weztermCli('get-pane-direction ' .. direction.new)
 	if err ~= nil then
 		notify(err, 'error')

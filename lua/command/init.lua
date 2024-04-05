@@ -185,14 +185,15 @@ M.run_current_file = function()
 						notify("didn't run file, as it's not executable", 'info')
 					end
 				end)
-			goto exit
+			goto skip
 		end
 	end
 
 	::run::
 	M.backend.run(command)
 	M.LastCommand = command
-	::exit::
+	::skip::
+
 end
 
 vim.api.nvim_create_user_command(

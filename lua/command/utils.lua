@@ -15,7 +15,7 @@ local M = {}
 M.system = function(shell_cmd)
 	local pipe = io.popen(shell_cmd)
 	if not pipe then
-		return "", "failed to run shell command: " .. shell_cmd
+		return '', 'failed to run shell command: ' .. shell_cmd
 	end
 	local ret = pipe:read()
 	pipe:close()
@@ -31,12 +31,11 @@ local levels = {
 	off = 5,
 }
 
-
 ---@param msg string
 ---@param level level
 M.notify = function(msg, level)
 	local actual = levels[level]
-	vim.notify(msg, actual, { title = "command.nvim", icon = require'command'.opts.icon })
+	vim.notify(msg, actual, { title = 'command.nvim', icon = require('command').opts.icon })
 end
 
 -- --- run shell command
