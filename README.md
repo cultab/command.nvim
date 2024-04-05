@@ -4,16 +4,25 @@
 
 command.nvim is a simple command runner. You give it a command and it runs it in a new or existing pane of your multiplexer (or a ToggleTerm terminal). It remembers the last command so it can repeat it. It can run the current file as is or a custom command depending on rules (see Rules section). If the current file is not executable, it asks if you want to make it executable.
 
+It supports the following multiplexers/backends:
+
+- tmux
+- wezterm
+- toggleterm
+
 ## Installing
 
-With lazy
+With Lazy.nvim
 
 ```lua
 {
-    "cultab/command.nvim",
-    opts = {}
+    'cultab/command.nvim',
+    opts = {},
+    dependencies = {
+        'MunifTanjim/nui.nvim',
+        'akinsho/toggleterm.nvim' -- optional, for the toggleterm backend
+    }
 }
-
 ```
 
 ## Usage
