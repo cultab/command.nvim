@@ -17,15 +17,21 @@ local directions = {
 	},
 }
 
+local suffix_cache = nil
 ---Returns executable suffix based on platform
 --- REF: Navigator.nvim
 ---@return string
 local function suffix()
-	local uname = vim.loop.os_uname()
-	if string.find(uname.release, 'WSL.*$') or string.find(uname.sysname, '^Win') then
-		return '.exe'
+	if not suffix_cache then
+		suffix_cache = '' -- default to empty, overwrite if it's windows
+		local uname = vim.loop.os_uname()
+		if string.find(uname.release, 'WSL.*$') or string.find(uname.sysname, '^Win') then -- may be windows
+			if os.execute 'wezterm.exe' == 0 then -- if exe exists, execute if expensive so heuristics first
+				suffix_cache = '.exe'
+			end
+		end
 	end
-	return ''
+	return suffix_cache
 end
 
 -- TODO: support Next/Prev by looking at the tab id
