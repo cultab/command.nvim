@@ -6,7 +6,7 @@ local M = {}
 --- @param shell_cmd string
 ---@return string, string?
 M.system = function(shell_cmd)
-	local pipe = io.popen(shell_cmd)
+	local pipe = io.popen(shell_cmd .. ' 2>&1')
 	if not pipe then
 		return '', 'failed to run shell command: ' .. shell_cmd
 	end
