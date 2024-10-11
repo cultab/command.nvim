@@ -3,16 +3,15 @@ local M = {}
 ---@alias level "trace" | "debug" | "info" | "warn" | "error" | "off"
 
 --- run shell command
---- @param shell_cmd string
+--- @param cmd string[]
 ---@return string, string?
-M.system = function(shell_cmd)
-	local pipe = io.popen(shell_cmd .. ' 2>&1')
-	if not pipe then
-		return '', 'failed to run shell command: ' .. shell_cmd
+M.system = function(cmd)
+	local obj = vim.system(cmd):wait()
+	if obj.code ~= 0 then
+		return '', 'failed to run "' .. vim.inspect(cmd) .. '"\n\texit code: ' .. obj.code .. '\n\tstderr: ' .. obj.stderr
 	end
-	local ret = pipe:read()
-	pipe:close()
-	return ret, nil
+	out = obj.stdout:gsub('\n$', '') -- remove trailing newline
+	return out, nil
 end
 
 local levels = {

@@ -19,16 +19,13 @@ local directions = {
 
 local suffix_cache = nil
 ---Returns executable suffix based on platform
---- REF: Navigator.nvim
 ---@return string
 local function suffix()
 	if not suffix_cache then
 		suffix_cache = '' -- default to empty, overwrite if it's windows
-		local uname = vim.loop.os_uname()
-		if string.find(uname.release, 'WSL.*$') or string.find(uname.sysname, '^Win') then -- may be windows
-			if os.execute 'wezterm.exe' == 0 then -- if exe exists, execute if expensive so heuristics first
-				suffix_cache = '.exe'
-			end
+		local obj = vim.system({ 'wezterm.exe', '--help' }):wait() -- if exe exists
+		if obj.code == 0 then
+			suffix_cache = '.exe'
 		end
 	end
 	return suffix_cache
@@ -36,36 +33,39 @@ end
 
 -- TODO: support Next/Prev by looking at the tab id
 local function weztermCli(subcmd)
-	local cli = 'wezterm' .. suffix() .. ' cli '
-	local ret, err = system(cli .. subcmd)
-	if err ~= nil then
-		return '', 'failed to run wezterm cli subcmd: ' .. err
-	end
-	return ret, nil
+	local bin = 'wezterm' .. suffix()
+	local ret, err = system { bin, 'cli', unpack(subcmd) }
+	return out, nil
 end
 
 local function weztermRun(cmd, pane_id)
-	local _, err = weztermCli('send-text --no-paste --pane-id ' .. pane_id .. " -- '" .. cmd .. "\n'")
+	local _, err = weztermCli { 'send-text', '--no-paste', '--pane-id', pane_id, '--', '' .. cmd .. '\n' }
 	if err ~= nil then
-		notify('failed to run command: ' .. err, 'error')
+		notify('command failed: ' .. err, 'error')
 		return
 	end
 end
 
 local function wezterm(cmd)
 	local direction = directions[require('command').CommandDirection]
-	local pane, err = weztermCli('get-pane-direction ' .. direction.new)
+	local pane, err = weztermCli { 'get-pane-direction', direction.new }
 	if err ~= nil then
-		notify(err, 'error')
+		notify("can't get-pane-direction: " .. err, 'error')
 	end
-	if not pane then
-		pane = weztermCli('split-pane --' .. direction.split)
-		_, err = weztermCli('activate-pane-direction ' .. direction.old)
+	if pane == '' then
+		pane, err = weztermCli { 'split-pane', '--' .. direction.split }
 		if err ~= nil then
-			notify(err, 'error')
+			notify("cant' split-pane" .. err, 'error')
+		end
+		_, err = weztermCli { 'activate-pane-direction', direction.old }
+		if err ~= nil then
+			notify("can't activate-pane-direction: " .. err, 'error')
 		end
 	end
 	weztermRun(cmd, pane)
+	if err ~= nil then
+		notify(err, 'error')
+	end
 end
 
 --- @type backend

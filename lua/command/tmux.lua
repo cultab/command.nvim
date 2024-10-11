@@ -16,27 +16,39 @@ local directions = {
 }
 
 local function tmuxSubcmd(subcmd)
-	local ret, err = system('tmux ' .. subcmd)
-	if err ~= nil then
-		return '', 'failed to run tmux cli subcmd: ' .. err
-	end
-	return ret, nil
+	return system { 'tmux', unpack(subcmd) }
 end
 
 local function tmuxRun(cmd, pane_id)
-	tmuxSubcmd('send-keys -t ' .. pane_id .. ' "' .. cmd .. '" Enter')
+	return tmuxSubcmd { 'send-keys', '-t', pane_id, cmd .. '\n' }
 end
 
 local function Tmux(cmd)
 	-- notify("the tmux backend is still unimplemented", "warn")
 
 	local direction = directions[require('command').CommandDirection]
-	local panes, _ = tmuxSubcmd 'display-message -p -F "#{window_panes}"'
-	if panes == '1' then
-		tmuxSubcmd('split-window -' .. direction.split)
-		tmuxSubcmd 'select-pane -t {last}'
+	local panes, err = tmuxSubcmd { 'display-message', '-p', '-F', '#{window_panes}' }
+	if err ~= nil then
+		notify("can't get panes: " .. err, 'error')
+		return
 	end
-	tmuxRun(cmd, direction.new)
+	if panes == '1' then
+		local _, err = tmuxSubcmd { 'split-window', '-' .. direction.split }
+		if err ~= nil then
+			notify("can't split window: " .. err, 'error')
+			return
+		end
+		tmuxSubcmd { 'select-pane', '-t', '{last}' }
+		if err ~= nil then
+			notify("can't return to vim pane: " .. err, 'error')
+			return
+		end
+	end
+	_, err = tmuxRun(cmd, direction.new)
+	if err ~= nil then
+		notify(err, 'error')
+		return
+	end
 end
 
 --- @type backend
