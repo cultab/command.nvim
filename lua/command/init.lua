@@ -103,7 +103,7 @@ M.setup = function(user_opts)
 	if M.opts.use == 'auto' then
 		if vim.env.TMUX then
 			M.backend = backends.tmux
-		elseif vim.env.WEZTERM_EXECUTABLE then
+		elseif vim.env.TERM == "wezterm" then
 			M.backend = backends.wezterm
 		elseif require 'toggleterm' then
 			M.backend = backends.toggleterm
