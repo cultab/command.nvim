@@ -8,7 +8,8 @@ local M = {}
 M.system = function(cmd)
 	local obj = vim.system(cmd):wait()
 	if obj.code ~= 0 then
-		return '', 'failed to run "' .. vim.inspect(cmd) .. '"\n\texit code: ' .. obj.code .. '\n\tstderr: ' .. obj.stderr
+		return '',
+			'failed to run "' .. vim.inspect(cmd) .. '"\n\texit code: ' .. obj.code .. '\n\tstderr: ' .. obj.stderr
 	end
 	out = obj.stdout:gsub('\n$', '') -- remove trailing newline
 	return out, nil
@@ -27,7 +28,7 @@ local levels = {
 ---@param level level
 M.notify = function(msg, level)
 	local actual = levels[level]
-	vim.notify(msg, actual, { title = 'command.nvim', icon = require('command').opts.icon })
+	vim.notify(msg, actual, { title = 'command.nvim', icon = vim.g.command.icon })
 end
 
 -- --- run shell command
