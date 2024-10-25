@@ -2,7 +2,8 @@
 
 command.nvim is a simple command runner. You give it a command and it runs it in a new or existing pane of your multiplexer (or a ToggleTerm terminal).
 It remembers the last command so it can repeat it.
-It can also run the current file as is or using a custom command depending on rules (see [Rules](#Rules) section). If the current file is not executable, it asks if you want to make it executable.
+It can also run the current file as is or using a custom command depending on rules (see [Rules](#Rules) section).
+If the current file is not executable, it asks if you want to make it executable.
 
 # TOC
 
