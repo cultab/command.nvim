@@ -15,3 +15,5 @@ jobs:
         with:
           dependencies: |
             nui.nvim
+          labels: |
+            neovim
