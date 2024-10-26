@@ -1,3 +1,5 @@
+[![LuaRocks](https://img.shields.io/luarocks/v/cultab/command.nvim?logo=lua&color=purple)](https://luarocks.org/modules/cultab/command.nvim)
+
 # command.nvim
 
 command.nvim is a simple command runner. You give it a command and it runs it in a new or existing pane of your multiplexer (or a ToggleTerm terminal).
@@ -65,7 +67,7 @@ Or use the user commands:
 
 ## Configuration
 
-Configurations is done by passing setting the `vim.g.command` table.
+Configurations is done by setting the `vim.g.command` table.
 
 ```lua
 vim.g.command = {--[[ options go here ]]} )

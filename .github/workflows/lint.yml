@@ -1,6 +1,11 @@
 ---
-on: [push, pull_request]
-name: lint-test
+on:
+  push:
+    paths:
+      - '**.lua'
+  pull_request:
+
+name: lint
 
 jobs:
   stylua:
