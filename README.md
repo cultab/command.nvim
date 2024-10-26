@@ -12,7 +12,7 @@ If the current file is not executable, it asks if you want to make it executable
 - [Configuration](#Configuration)
     - [Backends](#Backends)
     - [Rules](#Rules)
-    - [Defaults][#Defaults]
+    - [Defaults](#Defaults)
 - [TODO](#TODO)
 
 It supports the following multiplexers/terminal, refered to as backends hereafter:
