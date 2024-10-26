@@ -1,4 +1,4 @@
-*command.nvim.txt*       For Neovim >= 0.9.0      Last change: 2024 October 25
+*command.nvim.txt*       For Neovim >= 0.9.0      Last change: 2024 October 26
 
 ==============================================================================
 Table of Contents                             *command.nvim-table-of-contents*
