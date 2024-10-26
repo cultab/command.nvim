@@ -30,7 +30,7 @@ if you want to make it executable.
 - |command.nvim-configuration|
     - |command.nvim-backends|
     - |command.nvim-rules|
-    - [Defaults][#Defaults]
+    - |command.nvim-defaults|
 - |command.nvim-todo|
 
 It supports the following multiplexers/terminal, refered to as backends
