@@ -48,12 +48,12 @@ Setup keymaps for each action that you want to use. For example using lua:
 local map = vim.keymap.set
 map('n','<leader>ct', require('command').ChangeDirection, {
     desc = 'Toggles direction of opening panes for running commands' })
-map('n','<leader>cc', require('command').Run,             {
-    desc = 'Show prompt for a command to run'         })
-map('n','<leader>cr', require('command').CurrentFile,     {
-    desc = 'Run the current file, if not executable, ask whether to make executable and run'      })
-map('n','<leader>cl', require('command').LastCommand,     {
-    desc = 'Repeat last action'   })
+map('n','<leader>cc', require('command').Run, {
+    desc = 'Show prompt for a command to run' })
+map('n','<leader>cr', require('command').CurrentFile, {
+    desc = 'Run the current file, if not executable, ask whether to make executable and run' })
+map('n','<leader>cl', require('command').Last, {
+    desc = 'Repeat last action' })
 ```
 
 Or use the user commands:
@@ -62,7 +62,7 @@ Or use the user commands:
 :Command ChangeDirection
 :Command Run
 :Command CurrentFile
-:Command LastCommand
+:Command Last
 ```
 
 ## Configuration
@@ -75,8 +75,8 @@ vim.g.command = {--[[ options go here ]]} )
 
 ### Backends
 
-The backend is the multiplexer or terminal to use. It's controlled by the `use` key in the options table.
-If the `use` key is unset, as it is by default, heuristics are used to pick on of the supported backends.
+The backend is the multiplexer or terminal to use. It's controlled by the `backend` key in the options table.
+If the `backend` key is unset, as it is by default, heuristics are used to pick on of the supported backends.
 
 * If `$TMUX` is set, tmux is used.
 
@@ -89,7 +89,7 @@ If the `use` key is unset, as it is by default, heuristics are used to pick on o
     --- | 'tmux'
     --- | 'wezterm'
     --- | 'toggleterm'
-    use = nil
+    backend = nil
 ```
 
 #### tmux & wezterm
@@ -103,7 +103,9 @@ The ToggleTerm backend does not support toggling different pane directions, it u
 
 ### Rules
 
-Rules are key-value pairs of lua patterns and functions.
+When using `Command File` to run a file, instead of simply running the file you might want to run a specific shell command.
+Using Rules you can, they are key-value pairs of lua patterns and functions.
+The lua pattern is compared against the current filename, if it maches the function is run to get the shell command and run it.
 
 ```lua
 opts = {
@@ -113,15 +115,13 @@ opts = {
 		[".*%.lua"] = function(filepath)
 			return "nvim -l " .. filepath
 		end,
-        -- run the default Makefile rule if the current file is called 'Makefile'
+        -- run the default Makefile rule (by running make with no arguments) if the current file is called 'Makefile'
 		["Makefile"] = function(_)
 			return "make"
 		end,
 	},
 }
 ```
-
-The lua pattern is compared against the current filename, if it maches the function is run to get the shell command and run it.
 
 The function can accept an optional argument that will contain the filepath to the current file.
 The function shall return a shell command, as a string, to be run.
@@ -185,11 +185,13 @@ vim.g.command = {
 - [ ] history instead of just last command
 - [x] add bugs
 - [x] remove bugs
+- [ ] add more bugs
 - [ ] ~~user configured pane directions~~
     - [ ] ~~maybe fully custom~~
     - [ ] ~~maybe add every choice and make their availability configurable~~
 - [ ] user backends
 - [x] expunge `.setup()` all hail `vim.g`
+- [ ] <Plug> Mappings ?
 
 ## Similar Plugins
 

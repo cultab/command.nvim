@@ -1,11 +1,10 @@
-local notify = require('command.utils').notify
+if vim.g['loaded_command.nvim'] then
+	return
+else
+	vim.g['loaded_command.nvim'] = true
+end
 
---- @type backend[]
-local backends = {
-	wezterm = require 'command.wezterm',
-	tmux = require 'command.tmux',
-	toggleterm = require 'command.toggleterm',
-}
+local notify = require('command.utils').notify
 
 --- @type opts
 local default_opts = {
@@ -25,29 +24,26 @@ local default_opts = {
 local opts = vim.tbl_deep_extend('force', default_opts, vim.g.command or {})
 
 -- if backend is unset try heuristics
--- else fallback to the 'use' key
 if not opts.backend then
 	if vim.env.TMUX then
-		opts.backend = backends.tmux
+		opts.backend = 'tmux'
 	elseif vim.env.TERM == 'wezterm' then
-		opts.backend = backends.wezterm
+		opts.backend = 'wezterm'
 	elseif require 'toggleterm' then
-		opts.backend = backends.toggleterm
+		opts.backend = 'toggleterm'
 	else
-		notify('No backend could be chosen automatically', 'error')
+		notify('No backend set and one could not be chosen automatically', 'error')
 	end
-else
-	opts.backend = backends[opts.use]
 end
 
-local get_subcommand = function(opts)
+local get_subcommand = function(args)
 	local subcommands = require 'command'
 
-	local fargs = opts.fargs
+	local fargs = args.fargs
 	local subcommand_key = fargs[1]
 	local subcommand = subcommands[subcommand_key]
 	if not subcommand then
-		notify("No such subcommand: '" .. subcommand_key .. "'", 'error')
+		notify('No such subcommand: "' .. subcommand_key .. '"', 'error')
 		return
 	end
 	subcommand()

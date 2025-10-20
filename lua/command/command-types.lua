@@ -14,8 +14,7 @@
 --- @field directions direction[]|nil
 
 --- @class opts
---- @field use backend_used?
+--- @field backend backend_used?
 --- @field rules rule[]?
 --- @field validate boolean?
 --- @field icon string?
---- @field backend backend?

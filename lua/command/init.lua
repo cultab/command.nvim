@@ -2,6 +2,13 @@ local M = {}
 
 local notify = require('command.utils').notify
 
+--- @type backend
+M.backend = require('command.' .. vim.g.command.backend)
+--- @type string
+M.LastCommand = nil
+--- @type number
+M.CommandDirection = 1
+
 M.ChangeDirection = function()
 	if not M.backend.directions then
 		notify('Changing directions is not supported using backend: ' .. vim.g.command.use, 'error')
@@ -11,18 +18,9 @@ M.ChangeDirection = function()
 	notify('Changed command direction to ' .. M.backend.directions[M.CommandDirection].name, 'info')
 end
 
-local Input = require 'nui.input'
-local event = require('nui.utils.autocmd').event
-
---- @type string
-M.LastCommand = nil
---- @type number
-M.CommandDirection = 1
-
---- @type backend
-M.backend = nil
-
 M.Run = function()
+	local Input = require 'nui.input'
+	local event = require('nui.utils.autocmd').event
 	local input = Input({
 		relative = 'editor',
 		position = '50%',
@@ -45,7 +43,7 @@ M.Run = function()
 		on_submit = function(command)
 			if command then
 				M.LastCommand = command
-				vim.g.command.backend.run(command)
+				M.backend.run(command)
 			end
 		end,
 	})
@@ -60,17 +58,11 @@ M.Run = function()
 	end)
 	-- mount/open the component
 	input:mount()
-	-- vim.ui.input({ prompt = opts.icon .. "cmd: ", completion = 'shellcmd' }, function(command)
-	--     if command then
-	--         M.LastCommand = command
-	--         config.backend.run(command)
-	--     end
-	-- end)
 end
 
 M.Last = function()
 	if M.LastCommand then
-		vim.g.command.backend.run(M.LastCommand)
+		M.backend.run(M.LastCommand)
 	else
 		notify('No command to repeat', 'warn')
 	end
@@ -84,7 +76,7 @@ M.CurrentFile = function()
 	for pattern, callback in pairs(vim.g.command.rules) do
 		if string.find(filename, pattern) then
 			command = callback(filepath)
-			vim.g.command.backend.run(command)
+			M.backend.run(command)
 			M.LastCommand = command
 			return
 		end
@@ -97,15 +89,15 @@ M.CurrentFile = function()
 			prompt = vim.g.command.icon .. 'make executable?',
 		}, function(choice)
 			if choice and choice:find '[Yy]' then
-				vim.g.command.backend.run('chmod +x ' .. filepath)
-				vim.g.command.backend.run(command)
+				M.backend.run('chmod +x ' .. filepath)
+				M.backend.run(command)
 				M.LastCommand = command
 			else
 				notify("didn't run file, as it's not executable", 'info')
 			end
 		end)
 	else
-		vim.g.command.backend.run(command)
+		M.backend.run(command)
 		M.LastCommand = command
 	end
 end

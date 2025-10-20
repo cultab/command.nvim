@@ -35,7 +35,7 @@ end
 local function weztermCli(subcmd)
 	local bin = 'wezterm' .. suffix()
 	local ret, err = system { bin, 'cli', unpack(subcmd) }
-	return out, nil
+	return ret, err
 end
 
 local function weztermRun(cmd, pane_id)

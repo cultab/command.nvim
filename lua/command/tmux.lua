@@ -24,8 +24,6 @@ local function tmuxRun(cmd, pane_id)
 end
 
 local function Tmux(cmd)
-	-- notify("the tmux backend is still unimplemented", "warn")
-
 	local direction = directions[require('command').CommandDirection]
 	local panes, err = tmuxSubcmd { 'display-message', '-p', '-F', '#{window_panes}' }
 	if err ~= nil then
