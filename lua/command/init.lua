@@ -11,7 +11,7 @@ M.CommandDirection = 1
 
 M.ChangeDirection = function()
 	if not M.backend.directions then
-		notify('Changing directions is not supported using backend: ' .. vim.g.command.use, 'error')
+		notify('Changing directions is not supported using backend: ' .. vim.g.command.backend, 'error')
 		return
 	end
 	M.CommandDirection = (M.CommandDirection % #M.backend.directions + 1)

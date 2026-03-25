@@ -21,6 +21,7 @@ It supports the following multiplexers/terminal, referred to as backends hereaft
 
 - tmux
 - wezterm
+- zellij
 - toggleterm
 
 ## Installation
@@ -78,23 +79,32 @@ vim.g.command = {--[[ options go here ]]}
 The backend is the multiplexer or terminal to use. It's controlled by the `backend` key in the options table.
 If the `backend` key is unset, as it is by default, heuristics are used to pick one of the supported backends.
 
-* If `$TMUX` is set, tmux is used.
+The backend is selected using the following table of fallbacks, checked in order from top to bottom. The first condition that matches determines which backend will be used:
 
-* Else if `wezterm(?.exe)` exists in `$PATH`, wezterm is used.
+| Condition                                         | Backend    |
+| ------------------------------------------------- | ---------- |
+| `$TMUX` is set                                    | tmux       |
+| `$ZELLIJ` or `$ZELLIJ_SESSION_NAME` is set        | zellij     |
+| `$TERM` is `wezterm`                              | wezterm    |
+| toggleterm's module can be `require()`'ed         | toggleterm |
 
-* Else if toggleterm's module can be `require()`'ed, toggleterm is used.
+This order ensures that the most specific environment (e.g., tmux or zellij) is prioritized.  
+**If none of these heuristics succeed, you must explicitly set a backend using the `backend` key in your configuration. Otherwise, an error will be raised and no backend will be used.**
 
 ```lua
     --- @alias backend_used
     --- | 'tmux'
     --- | 'wezterm'
+    --- | 'zellij'
     --- | 'toggleterm'
     backend = nil
 ```
 
-#### tmux & wezterm
+#### tmux, wezterm, and zellij
 
-The tmux and wezterm backends both have 2 built in pane directions, right of the editor pane, and below the editor pane.
+The tmux and wezterm backends each have 2 built in pane directions, right of the editor pane, and below the editor pane.
+
+The zellij backend has those two directions plus a third that sends commands to a floating pane (creating one if none exists).
 
 #### ToggleTerm
 
@@ -137,6 +147,7 @@ vim.g.command = {
     --- @alias backend_used
     --- | 'tmux'
     --- | 'wezterm'
+    --- | 'zellij'
     --- | 'toggleterm'
     backend = nil
 
@@ -174,10 +185,10 @@ vim.g.command = {
     - [x] tmux
     - [x] ToggleTerm
     - [x] wezterm
+    - [x] zellij
     - [ ] default nvim terminal
     - [ ] kitty
     - [ ] some other backend
-    - [ ] zellij
 - [x] clean up types
     - [x] types for all opts, use lua-ls enums
     - [x] move to utils ?

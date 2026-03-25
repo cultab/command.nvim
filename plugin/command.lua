@@ -27,6 +27,8 @@ local opts = vim.tbl_deep_extend('force', default_opts, vim.g.command or {})
 if not opts.backend then
 	if vim.env.TMUX then
 		opts.backend = 'tmux'
+	elseif vim.env.ZELLIJ or vim.env.ZELLIJ_SESSION_NAME then
+		opts.backend = 'zellij'
 	elseif vim.env.TERM == 'wezterm' then
 		opts.backend = 'wezterm'
 	elseif pcall(require, 'toggleterm') then
