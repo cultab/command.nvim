@@ -41,6 +41,7 @@ hereafter:
 
 - tmux
 - wezterm
+- zellij
 - toggleterm
 
 
@@ -104,22 +105,25 @@ The backend is the multiplexer or terminal to use. It’s controlled by the
 default, heuristics are used to pick one of the supported backends.
 
 - If `$TMUX` is set, tmux is used.
-- Else if `wezterm(?.exe)` exists in `$PATH`, wezterm is used.
+- Else if `$ZELLIJ` or `$ZELLIJ_SESSION_NAME` is set (Neovim is running inside
+  Zellij), zellij is used.
+- Else if `$TERM` is `wezterm`, wezterm is used.
 - Else if toggleterm’s module can be `require()`’ed, toggleterm is used.
 
 >lua
         --- @alias backend_used
         --- | 'tmux'
         --- | 'wezterm'
+        --- | 'zellij'
         --- | 'toggleterm'
         backend = nil
 <
 
 
-TMUX & WEZTERM
+TMUX, WEZTERM, AND ZELLIJ
 
-The tmux and wezterm backends both have 2 built in pane directions, right of
-the editor pane, and below the editor pane.
+The tmux, wezterm, and zellij backends each have 2 built in pane directions,
+right of the editor pane, and below the editor pane.
 
 
 TOGGLETERM
@@ -168,6 +172,7 @@ The defaults options are as follows:
         --- @alias backend_used
         --- | 'tmux'
         --- | 'wezterm'
+        --- | 'zellij'
         --- | 'toggleterm'
         backend = nil
     
@@ -206,10 +211,10 @@ TODO                                                   *command.nvim-toc-todo*
     - tmux
     - ToggleTerm
     - wezterm
+    - zellij
     - default nvim terminal
     - kitty
     - some other backend
-    - zellij
 - clean up types
     - types for all opts, use lua-ls enums
     - move to utils ?

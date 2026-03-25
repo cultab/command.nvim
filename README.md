@@ -21,6 +21,7 @@ It supports the following multiplexers/terminal, referred to as backends hereaft
 
 - tmux
 - wezterm
+- zellij
 - toggleterm
 
 ## Installation
@@ -80,7 +81,9 @@ If the `backend` key is unset, as it is by default, heuristics are used to pick 
 
 * If `$TMUX` is set, tmux is used.
 
-* Else if `wezterm(?.exe)` exists in `$PATH`, wezterm is used.
+* Else if `$ZELLIJ` or `$ZELLIJ_SESSION_NAME` is set (Neovim is running inside Zellij), zellij is used.
+
+* Else if `$TERM` is `wezterm`, wezterm is used.
 
 * Else if toggleterm's module can be `require()`'ed, toggleterm is used.
 
@@ -88,13 +91,14 @@ If the `backend` key is unset, as it is by default, heuristics are used to pick 
     --- @alias backend_used
     --- | 'tmux'
     --- | 'wezterm'
+    --- | 'zellij'
     --- | 'toggleterm'
     backend = nil
 ```
 
-#### tmux & wezterm
+#### tmux, wezterm, and zellij
 
-The tmux and wezterm backends both have 2 built in pane directions, right of the editor pane, and below the editor pane.
+The tmux, wezterm, and zellij backends each have 2 built in pane directions, right of the editor pane, and below the editor pane.
 
 #### ToggleTerm
 
@@ -137,6 +141,7 @@ vim.g.command = {
     --- @alias backend_used
     --- | 'tmux'
     --- | 'wezterm'
+    --- | 'zellij'
     --- | 'toggleterm'
     backend = nil
 
@@ -174,10 +179,10 @@ vim.g.command = {
     - [x] tmux
     - [x] ToggleTerm
     - [x] wezterm
+    - [x] zellij
     - [ ] default nvim terminal
     - [ ] kitty
     - [ ] some other backend
-    - [ ] zellij
 - [x] clean up types
     - [x] types for all opts, use lua-ls enums
     - [x] move to utils ?
