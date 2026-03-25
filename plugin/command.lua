@@ -29,7 +29,7 @@ if not opts.backend then
 		opts.backend = 'tmux'
 	elseif vim.env.TERM == 'wezterm' then
 		opts.backend = 'wezterm'
-	elseif require 'toggleterm' then
+	elseif pcall(require, 'toggleterm') then
 		opts.backend = 'toggleterm'
 	else
 		notify('No backend set and one could not be chosen automatically', 'error')

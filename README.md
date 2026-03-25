@@ -17,7 +17,7 @@ If the current file is not executable, it asks if you want to make it executable
     - [Defaults](#Defaults)
 - [TODO](#TODO)
 
-It supports the following multiplexers/terminal, refered to as backends hereafter:
+It supports the following multiplexers/terminal, referred to as backends hereafter:
 
 - tmux
 - wezterm
@@ -70,13 +70,13 @@ Or use the user commands:
 Configurations is done by setting the `vim.g.command` table.
 
 ```lua
-vim.g.command = {--[[ options go here ]]} )
+vim.g.command = {--[[ options go here ]]}
 ```
 
 ### Backends
 
 The backend is the multiplexer or terminal to use. It's controlled by the `backend` key in the options table.
-If the `backend` key is unset, as it is by default, heuristics are used to pick on of the supported backends.
+If the `backend` key is unset, as it is by default, heuristics are used to pick one of the supported backends.
 
 * If `$TMUX` is set, tmux is used.
 
@@ -105,7 +105,7 @@ The ToggleTerm backend does not support toggling different pane directions, it u
 
 When using `Command File` to run a file, instead of simply running the file you might want to run a specific shell command.
 Using Rules you can, they are key-value pairs of lua patterns and functions.
-The lua pattern is compared against the current filename, if it maches the function is run to get the shell command and run it.
+The lua pattern is compared against the current filename, if it matches the function is run to get the shell command and run it.
 
 ```lua
 opts = {
@@ -138,7 +138,7 @@ vim.g.command = {
     --- | 'tmux'
     --- | 'wezterm'
     --- | 'toggleterm'
-    use = nil
+    backend = nil
 
     --- defines rules to overwrite the command to run when using the "run current file" behavior
     --- keys are lua patterns (see :help lua-pattern)
@@ -195,4 +195,4 @@ vim.g.command = {
 
 ## Similar Plugins
 
-- [yeet.nvim](https://github.com/samharju/yeet.nvim), very similar, would not have *originaly* made this had I known yeet.nvim existed :^P
+- [yeet.nvim](https://github.com/samharju/yeet.nvim), very similar, would not have *originally* made this had I known yeet.nvim existed :^P
