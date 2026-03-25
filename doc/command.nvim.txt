@@ -106,7 +106,7 @@ default, heuristics are used to pick one of the supported backends.
 
 - If `$TMUX` is set, tmux is used.
 - Else if `$ZELLIJ` or `$ZELLIJ_SESSION_NAME` is set (Neovim is running inside
-  Zellij), zellij is used.
+    Zellij), zellij is used.
 - Else if `$TERM` is `wezterm`, wezterm is used.
 - Else if toggleterm’s module can be `require()`’ed, toggleterm is used.
 
