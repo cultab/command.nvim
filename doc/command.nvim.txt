@@ -122,8 +122,11 @@ default, heuristics are used to pick one of the supported backends.
 
 TMUX, WEZTERM, AND ZELLIJ
 
-The tmux, wezterm, and zellij backends each have 2 built in pane directions,
-right of the editor pane, and below the editor pane.
+The tmux and wezterm backends each have 2 built in pane directions, right of
+the editor pane, and below the editor pane.
+
+The zellij backend has those two directions plus a third that sends commands to
+a floating pane (creating one if none exists).
 
 
 TOGGLETERM

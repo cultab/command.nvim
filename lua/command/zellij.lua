@@ -13,6 +13,10 @@ local directions = {
 		new = 'down',
 		split = 'down',
 	},
+	{
+		name = 'floating pane',
+		new = 'floating',
+	},
 }
 
 ---@param p table
@@ -106,9 +110,26 @@ local function find_focused_terminal(panes)
 	return nil
 end
 
+--- Prefer focused floating terminal, else any floating terminal pane.
+---@param panes table[]
+---@return table|nil
+local function find_floating_terminal(panes)
+	for _, p in ipairs(panes) do
+		if not p.is_plugin and p.is_floating and p.is_focused then
+			return p
+		end
+	end
+	for _, p in ipairs(panes) do
+		if not p.is_plugin and p.is_floating then
+			return p
+		end
+	end
+	return nil
+end
+
 ---@return table[]|nil, string?
 local function list_panes()
-	local out, err = system { 'zellij', 'action', 'list-panes', '--json', '--geometry' }
+	local out, err = system { 'zellij', 'action', 'list-panes', '--json', '--geometry', '--state' }
 	if err then
 		return nil, err
 	end
@@ -161,6 +182,35 @@ local function split_pane(dir)
 	return nil, 'could not find new pane after split'
 end
 
+---@return table|nil, string?
+local function new_floating_pane()
+	local before, err = list_panes()
+	if err then
+		return nil, err
+	end
+	if not before then
+		return nil, 'list-panes returned no data'
+	end
+	local before_ids = terminal_ids_set(before)
+	local _, split_err = system { 'zellij', 'action', 'new-pane', '--floating' }
+	if split_err then
+		return nil, split_err
+	end
+	local after, err2 = list_panes()
+	if err2 then
+		return nil, err2
+	end
+	if not after then
+		return nil, 'list-panes returned no data after new floating pane'
+	end
+	for _, p in ipairs(after) do
+		if not p.is_plugin and not before_ids[p.id] then
+			return p, nil
+		end
+	end
+	return nil, 'could not find new floating pane'
+end
+
 ---@param cmd string
 ---@param pane_id string
 ---@return string?
@@ -180,36 +230,58 @@ local function zellij_run(cmd)
 		notify('list-panes returned no data', 'error')
 		return
 	end
-	local focused = find_focused_terminal(panes)
-	if not focused then
-		notify('could not find focused terminal pane in Zellij', 'error')
-		return
-	end
 
 	local direction = directions[require('command').CommandDirection]
-	if not direction or not direction.new or not direction.split then
+	if not direction or not direction.new then
 		notify('invalid pane direction', 'error')
 		return
 	end
-	local neighbor
-	if direction.new == 'right' then
-		neighbor = find_right_neighbor(focused, panes)
-	elseif direction.new == 'down' then
-		neighbor = find_down_neighbor(focused, panes)
-	end
 
-	local target = neighbor
-	if not target then
-		local new_pane, split_err = split_pane(direction.split)
-		if split_err then
-			notify(split_err, 'error')
+	local target
+
+	if direction.new == 'floating' then
+		target = find_floating_terminal(panes)
+		if not target then
+			local fpane, ferr = new_floating_pane()
+			if ferr then
+				notify(ferr, 'error')
+				return
+			end
+			if not fpane then
+				notify('could not create floating pane', 'error')
+				return
+			end
+			target = fpane
+		end
+	else
+		if not direction.split then
+			notify('invalid pane direction', 'error')
 			return
 		end
-		if not new_pane then
-			notify('split did not create a new pane', 'error')
+		local focused = find_focused_terminal(panes)
+		if not focused then
+			notify('could not find focused terminal pane in Zellij', 'error')
 			return
 		end
-		target = new_pane
+		local neighbor
+		if direction.new == 'right' then
+			neighbor = find_right_neighbor(focused, panes)
+		elseif direction.new == 'down' then
+			neighbor = find_down_neighbor(focused, panes)
+		end
+		target = neighbor
+		if not target then
+			local new_pane, split_err = split_pane(direction.split)
+			if split_err then
+				notify(split_err, 'error')
+				return
+			end
+			if not new_pane then
+				notify('split did not create a new pane', 'error')
+				return
+			end
+			target = new_pane
+		end
 	end
 
 	local pane_id = terminal_pane_id(target)
