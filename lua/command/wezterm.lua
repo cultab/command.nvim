@@ -21,17 +21,23 @@ local suffix_cache = nil
 ---Returns executable suffix based on platform
 ---@return string
 local function suffix()
-	if not suffix_cache then
-		suffix_cache = '' -- default to empty, overwrite if it's windows
-		local obj = vim.system({ 'wezterm.exe', '--help' }):wait() -- if exe exists
-		if obj.code == 0 then
-			suffix_cache = '.exe'
-		end
+	if suffix_cache then
+		return suffix_cache
+	end
+
+	suffix_cache = '' -- default to empty, overwrite if it's windows
+	-- NOTE: don't use utils.system here. An error means we're not on windows, NOT that something went wrong.
+	local ok, obj = pcall(vim.system, { 'wezterm.exe', '--help' })
+	if not ok then
+		return suffix_cache
+	end
+	if obj:wait().code == 0 then
+		suffix_cache = '.exe'
 	end
 	return suffix_cache
 end
 
--- TODO: support Next/Prev by looking at the tab id
+--  TODO: support Next/Prev by looking at the tab id
 local function weztermCli(subcmd)
 	local bin = 'wezterm' .. suffix()
 	local ret, err = system { bin, 'cli', unpack(subcmd) }
