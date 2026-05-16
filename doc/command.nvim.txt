@@ -1,4 +1,4 @@
-*command.nvim.txt*       For Neovim >= 0.9.0      Last change: 2025 October 20
+*command.nvim.txt*        For Neovim >= 0.9.0       Last change: 2026 March 25
 
 ==============================================================================
 Table of Contents                             *command.nvim-table-of-contents*
@@ -36,11 +36,12 @@ if you want to make it executable.
     - |command.nvim-defaults|
 - |command.nvim-todo|
 
-It supports the following multiplexers/terminal, refered to as backends
+It supports the following multiplexers/terminal, referred to as backends
 hereafter:
 
 - tmux
 - wezterm
+- zellij
 - toggleterm
 
 
@@ -93,7 +94,7 @@ CONFIGURATION                                 *command.nvim-toc-configuration*
 Configurations is done by setting the `vim.g.command` table.
 
 >lua
-    vim.g.command = {--[[ options go here ]]} )
+    vim.g.command = {--[[ options go here ]]}
 <
 
 
@@ -101,25 +102,31 @@ BACKENDS ~
 
 The backend is the multiplexer or terminal to use. It’s controlled by the
 `backend` key in the options table. If the `backend` key is unset, as it is by
-default, heuristics are used to pick on of the supported backends.
+default, heuristics are used to pick one of the supported backends.
 
 - If `$TMUX` is set, tmux is used.
-- Else if `wezterm(?.exe)` exists in `$PATH`, wezterm is used.
+- Else if `$ZELLIJ` or `$ZELLIJ_SESSION_NAME` is set (Neovim is running inside
+    Zellij), zellij is used.
+- Else if `$TERM` is `wezterm`, wezterm is used.
 - Else if toggleterm’s module can be `require()`’ed, toggleterm is used.
 
 >lua
         --- @alias backend_used
         --- | 'tmux'
         --- | 'wezterm'
+        --- | 'zellij'
         --- | 'toggleterm'
         backend = nil
 <
 
 
-TMUX & WEZTERM
+TMUX, WEZTERM, AND ZELLIJ
 
-The tmux and wezterm backends both have 2 built in pane directions, right of
+The tmux and wezterm backends each have 2 built in pane directions, right of
 the editor pane, and below the editor pane.
+
+The zellij backend has those two directions plus a third that sends commands to
+a floating pane (creating one if none exists).
 
 
 TOGGLETERM
@@ -133,8 +140,8 @@ RULES ~
 When using `Command File` to run a file, instead of simply running the file you
 might want to run a specific shell command. Using Rules you can, they are
 key-value pairs of lua patterns and functions. The lua pattern is compared
-against the current filename, if it maches the function is run to get the shell
-command and run it.
+against the current filename, if it matches the function is run to get the
+shell command and run it.
 
 >lua
     opts = {
@@ -168,8 +175,9 @@ The defaults options are as follows:
         --- @alias backend_used
         --- | 'tmux'
         --- | 'wezterm'
+        --- | 'zellij'
         --- | 'toggleterm'
-        use = nil
+        backend = nil
     
         --- defines rules to overwrite the command to run when using the "run current file" behavior
         --- keys are lua patterns (see :help lua-pattern)
@@ -206,10 +214,10 @@ TODO                                                   *command.nvim-toc-todo*
     - tmux
     - ToggleTerm
     - wezterm
+    - zellij
     - default nvim terminal
     - kitty
     - some other backend
-    - zellij
 - clean up types
     - types for all opts, use lua-ls enums
     - move to utils ?
@@ -228,7 +236,7 @@ TODO                                                   *command.nvim-toc-todo*
 
 SIMILAR PLUGINS                             *command.nvim-toc-similar-plugins*
 
-- yeet.nvim <https://github.com/samharju/yeet.nvim>, very similar, would not have _originaly_ made this had I known yeet.nvim existed :^P
+- yeet.nvim <https://github.com/samharju/yeet.nvim>, very similar, would not have _originally_ made this had I known yeet.nvim existed :^P
 
 ==============================================================================
 3. Links                                                  *command.nvim-links*
